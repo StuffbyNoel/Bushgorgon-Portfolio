@@ -26,6 +26,18 @@
             }
         }
     </script>
+
+    <!-- Google Model Viewer for Interactive .glb 3D Display -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+
+    <style>
+        model-viewer {
+            --poster-color: transparent;
+            --progress-bar-color: #ffffff;
+            --progress-bar-height: 2px;
+            outline: none;
+        }
+    </style>
 </head>
 <body id="top" class="font-poppins bg-black text-white selection:bg-white selection:text-black antialiased overflow-x-hidden">
 
@@ -51,12 +63,57 @@
             </div>
         </div>
 
-        <!-- Main Media Placeholder (Hero Render / Turntable Video) -->
-        <div class="w-full max-w-5xl aspect-video bg-[#0a0a0a] border border-[#2a2a2a] rounded-sm relative group overflow-hidden flex items-center justify-center">
-            <!-- Replace this <p> with an <img>, <video>, or turntable <iframe> when ready -->
-            <p class="font-bebas text-3xl md:text-4xl text-[#2a2a2a] tracking-widest text-center px-4 group-hover:scale-110 transition-transform duration-700">
-                HERO BEAUTY RENDER / TURNTABLE
-            </p>
+        <!-- Interactive 3D Model Viewer (.glb) -->
+        <!-- Displays Bushgorgon1.png by default; fades to the interactive 3D .glb model on hover (or tap on mobile) -->
+        <div id="viewer-container" class="group w-full max-w-5xl aspect-video bg-[#0a0a0a] border border-[#2a2a2a] hover:border-white/40 rounded-sm relative overflow-hidden flex items-center justify-center transition-colors duration-300">
+            <model-viewer
+                id="bushgorgon-viewer"
+                src="./Bushgorgon.glb"
+                alt="BushGorgon 3D Model"
+                camera-controls
+                auto-rotate
+                auto-rotate-delay="1500"
+                rotation-per-second="20deg"
+                shadow-intensity="1"
+                exposure="1"
+                environment-image="neutral"
+                touch-action="pan-y"
+                class="w-full h-full bg-gradient-to-b from-[#121212] via-[#0a0a0a] to-[#050505]"
+            >
+                <!-- Subtle Fallback Notice (Only shown if .glb file isn't found) -->
+                <div id="model-error" class="hidden absolute inset-0 flex flex-col items-center justify-center text-center px-6 pointer-events-none">
+                    <p class="font-bebas text-3xl md:text-4xl text-[#3a3a3a] tracking-widest">
+                        3D MODEL VIEWER READY
+                    </p>
+                    <p class="text-xs md:text-sm text-gray-500 font-light tracking-wider mt-2">
+                        Place <span class="text-gray-300">BushGorgon.glb</span> in the same folder to view interactively
+                    </p>
+                </div>
+            </model-viewer>
+
+            <!-- Default Render Cover (Visible when not hovered, fades away on hover to reveal the 3D file) -->
+            <div id="viewer-cover" class="absolute inset-0 z-20 pointer-events-none transition-opacity duration-500 ease-out opacity-100 group-hover:opacity-0">
+                <img src="./Bushgorgon1.png" alt="BushGorgon Beauty Render" class="w-full h-full object-cover" onerror="this.style.display='none';">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                <div class="absolute bottom-4 left-4 md:bottom-5 md:left-5 bg-black/75 border border-white/25 backdrop-blur-sm px-3.5 py-1.5 rounded text-xs md:text-sm font-bebas tracking-widest text-white">
+                    HOVER TO INSPECT IN 3D
+                </div>
+            </div>
+
+            <!-- Top-Left Interaction Hint (Fades in when hovered) -->
+            <div id="viewer-hint" class="absolute top-3 left-3 md:top-4 md:left-4 bg-black/70 border border-white/15 backdrop-blur-sm px-3 py-1 rounded text-[10px] md:text-xs font-bebas tracking-widest text-gray-300 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                DRAG TO ORBIT &bull; SCROLL TO ZOOM
+            </div>
+
+            <!-- Bottom-Right Viewer Controls (Fades in when hovered) -->
+            <div id="viewer-controls" class="absolute bottom-3 right-3 md:bottom-4 md:right-4 flex items-center gap-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <button id="toggle-rotate-btn" type="button" class="bg-black/75 hover:bg-white hover:text-black border border-white/25 backdrop-blur-sm px-3 py-1.5 rounded text-xs font-bebas tracking-widest text-gray-200 transition-colors cursor-pointer active:scale-95">
+                    PAUSE ROTATE
+                </button>
+                <button id="reset-camera-btn" type="button" class="bg-black/75 hover:bg-white hover:text-black border border-white/25 backdrop-blur-sm px-3 py-1.5 rounded text-xs font-bebas tracking-widest text-gray-200 transition-colors cursor-pointer active:scale-95">
+                    RESET VIEW
+                </button>
+            </div>
         </div>
 
         <!-- Project Details -->
@@ -91,36 +148,118 @@
 
         <!-- Modeling & Look-Dev Breakdown Grid -->
         <div class="w-full max-w-5xl mt-20">
-            <h3 class="font-bebas text-3xl tracking-widest text-white mb-6">RENDERS & BREAKDOWN</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Close-up Render -->
+            <h3 class="font-bebas text-3xl tracking-widest text-white mb-6">TURNTABLE</h3>
+            <!-- Turntable Video (Update src="./Bushgorgon_Turntable.mp4" if your video file has a different name) -->
+            <div class="w-full aspect-video bg-[#0a0a0a] border border-[#2a2a2a] rounded-sm relative overflow-hidden flex items-center justify-center mb-14">
+                <video
+                    src="./Bushgorgon_Turntable.mp4"
+                    poster="./Bushgorgon1.png"
+                    autoplay
+                    loop
+                    muted
+                    playsinline
+                    controls
+                    class="w-full h-full object-cover"
+                ></video>
+            </div>
+
+            <h3 class="font-bebas text-3xl tracking-widest text-white mb-6">FINAL RENDERS</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-14">
+                <!-- Beauty Render 01 -->
                 <div class="aspect-video bg-[#0a0a0a] border border-[#2a2a2a] rounded-sm relative group overflow-hidden flex items-center justify-center">
-                    <p class="font-bebas text-2xl text-[#2a2a2a] tracking-widest group-hover:scale-105 transition-transform duration-500">
-                        DETAIL CLOSE-UP RENDER
-                    </p>
+                    <img src="./Bushgorgon1.png" alt="BushGorgon Posed Render" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
+                    <p class="hidden font-bebas text-2xl text-[#2a2a2a] tracking-widest">BEAUTY RENDER 01</p>
+                    <span class="absolute bottom-3 left-3 bg-black/75 border border-white/15 backdrop-blur-sm px-2.5 py-0.5 rounded text-xs font-bebas tracking-widest text-gray-200 pointer-events-none">
+                        POSED RENDER
+                    </span>
                 </div>
-                <!-- Clay / Sculpt Pass -->
+                <!-- Beauty Render 02 -->
                 <div class="aspect-video bg-[#0a0a0a] border border-[#2a2a2a] rounded-sm relative group overflow-hidden flex items-center justify-center">
-                    <p class="font-bebas text-2xl text-[#2a2a2a] tracking-widest group-hover:scale-105 transition-transform duration-500">
-                        HIGH-POLY SCULPT / CLAY
-                    </p>
+                    <img src="./Bushgorgon2.png" alt="BushGorgon Front Render" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
+                    <p class="hidden font-bebas text-2xl text-[#2a2a2a] tracking-widest">BEAUTY RENDER 02</p>
+                    <span class="absolute bottom-3 left-3 bg-black/75 border border-white/15 backdrop-blur-sm px-2.5 py-0.5 rounded text-xs font-bebas tracking-widest text-gray-200 pointer-events-none">
+                        FRONT A-POSE
+                    </span>
                 </div>
-                <!-- Wireframe / Topology -->
-                <div class="aspect-video bg-[#0a0a0a] border border-[#2a2a2a] rounded-sm relative group overflow-hidden flex items-center justify-center">
-                    <p class="font-bebas text-2xl text-[#2a2a2a] tracking-widest group-hover:scale-105 transition-transform duration-500">
-                        WIREFRAME & TOPOLOGY
-                    </p>
+            </div>
+
+            <h3 class="font-bebas text-3xl tracking-widest text-white mb-6">HIGH-POLY CLAY SCULPTS</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Clay Sculpt 01: Chest & Scar -->
+                <div class="aspect-[4/3] bg-[#0a0a0a] border border-[#2a2a2a] rounded-sm relative group overflow-hidden flex items-center justify-center">
+                    <img src="./Bushgorgon4.png" alt="BushGorgon Torso Clay Sculpt" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
+                    <p class="hidden font-bebas text-2xl text-[#2a2a2a] tracking-widest">TORSO CLAY SCULPT</p>
+                    <span class="absolute bottom-3 left-3 bg-black/75 border border-white/15 backdrop-blur-sm px-2.5 py-0.5 rounded text-xs font-bebas tracking-widest text-gray-200 pointer-events-none">
+                        TORSO &amp; SCAR DETAIL
+                    </span>
                 </div>
-                <!-- UV & Texture Maps -->
-                <div class="aspect-video bg-[#0a0a0a] border border-[#2a2a2a] rounded-sm relative group overflow-hidden flex items-center justify-center">
-                    <p class="font-bebas text-2xl text-[#2a2a2a] tracking-widest group-hover:scale-105 transition-transform duration-500">
-                        SHADERS & TEXTURE MAPS
-                    </p>
+                <!-- Clay Sculpt 02: Back & Spine -->
+                <div class="aspect-[4/3] bg-[#0a0a0a] border border-[#2a2a2a] rounded-sm relative group overflow-hidden flex items-center justify-center">
+                    <img src="./Bushgorgon5.png" alt="BushGorgon Back Spine Clay Sculpt" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
+                    <p class="hidden font-bebas text-2xl text-[#2a2a2a] tracking-widest">BACK CLAY SCULPT</p>
+                    <span class="absolute bottom-3 left-3 bg-black/75 border border-white/15 backdrop-blur-sm px-2.5 py-0.5 rounded text-xs font-bebas tracking-widest text-gray-200 pointer-events-none">
+                        BACK &amp; SPINE DETAIL
+                    </span>
+                </div>
+                <!-- Clay Sculpt 03: Hand Detail -->
+                <div class="aspect-[4/3] bg-[#0a0a0a] border border-[#2a2a2a] rounded-sm relative group overflow-hidden flex items-center justify-center">
+                    <img src="./Bushgorgon3.png" alt="BushGorgon Hand Clay Sculpt" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
+                    <p class="hidden font-bebas text-2xl text-[#2a2a2a] tracking-widest">HAND CLAY SCULPT</p>
+                    <span class="absolute bottom-3 left-3 bg-black/75 border border-white/15 backdrop-blur-sm px-2.5 py-0.5 rounded text-xs font-bebas tracking-widest text-gray-200 pointer-events-none">
+                        HAND ANATOMY DETAIL
+                    </span>
                 </div>
             </div>
         </div>
 
     </section>
+
+    <!-- 3D Viewer Controls Script -->
+    <script>
+        const viewerContainer = document.getElementById('viewer-container');
+        const viewerCover = document.getElementById('viewer-cover');
+        const viewerHint = document.getElementById('viewer-hint');
+        const viewerControls = document.getElementById('viewer-controls');
+        const viewer = document.getElementById('bushgorgon-viewer');
+        const toggleRotateBtn = document.getElementById('toggle-rotate-btn');
+        const resetCameraBtn = document.getElementById('reset-camera-btn');
+        const modelError = document.getElementById('model-error');
+
+        // Support touch devices: reveal the 3D viewer on first tap inside the container
+        if (viewerContainer && viewerCover) {
+            viewerContainer.addEventListener('touchstart', () => {
+                viewerCover.classList.remove('opacity-100');
+                viewerCover.classList.add('opacity-0');
+                if (viewerHint) viewerHint.classList.add('opacity-100');
+                if (viewerControls) viewerControls.classList.add('opacity-100');
+            }, { passive: true });
+        }
+
+        if (viewer) {
+            // Show clean fallback message if the .glb file isn't uploaded yet
+            viewer.addEventListener('error', () => {
+                if (modelError) modelError.classList.remove('hidden');
+            });
+
+            // Toggle turntable auto-rotation
+            toggleRotateBtn.addEventListener('click', () => {
+                const isRotating = viewer.hasAttribute('auto-rotate');
+                if (isRotating) {
+                    viewer.removeAttribute('auto-rotate');
+                    toggleRotateBtn.textContent = 'AUTO ROTATE';
+                } else {
+                    viewer.setAttribute('auto-rotate', '');
+                    toggleRotateBtn.textContent = 'PAUSE ROTATE';
+                }
+            });
+
+            // Reset camera back to default framing
+            resetCameraBtn.addEventListener('click', () => {
+                viewer.cameraOrbit = 'auto auto auto';
+                viewer.fieldOfView = 'auto';
+            });
+        }
+    </script>
 
 </body>
 </html>
