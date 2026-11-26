@@ -27,14 +27,16 @@
         }
     </script>
 
-    <!-- Google Model Viewer for Interactive .glb 3D Display -->
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+    <!-- Marmoset Toolbag Web Viewer for Interactive .mview 3D Display -->
+    <script src="https://viewer.marmoset.co/main/marmoset.js"></script>
 
     <style>
-        model-viewer {
-            --poster-color: transparent;
-            --progress-bar-color: #ffffff;
-            --progress-bar-height: 2px;
+        /* Ensure Marmoset's embedded WebGL canvas fills the responsive 16:9 container cleanly */
+        #marmoset-mount > div,
+        #marmoset-mount canvas {
+            width: 100% !important;
+            height: 100% !important;
+            display: block;
             outline: none;
         }
     </style>
@@ -63,56 +65,35 @@
             </div>
         </div>
 
-        <!-- Interactive 3D Model Viewer (.glb) -->
-        <!-- Displays Bushgorgon1.png by default; fades to the interactive 3D .glb model on hover (or tap on mobile) -->
+        <!-- Interactive Marmoset 3D Viewer (.mview) -->
+        <!-- Displays Bushgorgon1.png by default; fades to your interactive Marmoset scene on hover (or tap on mobile) -->
+        <!-- Rename your exported file to 'BushGorgon.mview' or update MVIEW_FILE in the script below -->
         <div id="viewer-container" class="group w-full max-w-5xl aspect-video bg-[#0a0a0a] border border-[#2a2a2a] hover:border-white/40 rounded-sm relative overflow-hidden flex items-center justify-center transition-colors duration-300">
-            <model-viewer
-                id="bushgorgon-viewer"
-                src="./Bushgorgon.glb"
-                alt="BushGorgon 3D Model"
-                camera-controls
-                auto-rotate
-                auto-rotate-delay="1500"
-                rotation-per-second="20deg"
-                shadow-intensity="1"
-                exposure="1"
-                environment-image="neutral"
-                touch-action="pan-y"
-                class="w-full h-full bg-gradient-to-b from-[#121212] via-[#0a0a0a] to-[#050505]"
-            >
-                <!-- Subtle Fallback Notice (Only shown if .glb file isn't found) -->
-                <div id="model-error" class="hidden absolute inset-0 flex flex-col items-center justify-center text-center px-6 pointer-events-none">
-                    <p class="font-bebas text-3xl md:text-4xl text-[#3a3a3a] tracking-widest">
-                        3D MODEL VIEWER READY
-                    </p>
-                    <p class="text-xs md:text-sm text-gray-500 font-light tracking-wider mt-2">
-                        Place <span class="text-gray-300">BushGorgon.glb</span> in the same folder to view interactively
-                    </p>
-                </div>
-            </model-viewer>
+            <!-- Marmoset WebViewer Mount Point -->
+            <div id="marmoset-mount" class="w-full h-full bg-[#0a0a0a]"></div>
 
-            <!-- Default Render Cover (Visible when not hovered, fades away on hover to reveal the 3D file) -->
+            <!-- Subtle Fallback Notice (Only shown if marmoset.js cannot initialize) -->
+            <div id="model-error" class="hidden absolute inset-0 flex flex-col items-center justify-center text-center px-6 pointer-events-none z-10">
+                <p class="font-bebas text-3xl md:text-4xl text-[#3a3a3a] tracking-widest">
+                    MARMOSET VIEWER READY
+                </p>
+                <p class="text-xs md:text-sm text-gray-500 font-light tracking-wider mt-2">
+                    Place <span class="text-gray-300">BushGorgon.mview</span> in the same folder to view interactively
+                </p>
+            </div>
+
+            <!-- Default Render Cover (Visible when not hovered, fades away on hover to reveal the 3D scene) -->
             <div id="viewer-cover" class="absolute inset-0 z-20 pointer-events-none transition-opacity duration-500 ease-out opacity-100 group-hover:opacity-0">
                 <img src="./Bushgorgon1.png" alt="BushGorgon Beauty Render" class="w-full h-full object-cover" onerror="this.style.display='none';">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
                 <div class="absolute bottom-4 left-4 md:bottom-5 md:left-5 bg-black/75 border border-white/25 backdrop-blur-sm px-3.5 py-1.5 rounded text-xs md:text-sm font-bebas tracking-widest text-white">
-                    HOVER TO INSPECT IN 3D
+                    HOVER TO INSPECT IN 3D &bull; MARMOSET
                 </div>
             </div>
 
             <!-- Top-Left Interaction Hint (Fades in when hovered) -->
             <div id="viewer-hint" class="absolute top-3 left-3 md:top-4 md:left-4 bg-black/70 border border-white/15 backdrop-blur-sm px-3 py-1 rounded text-[10px] md:text-xs font-bebas tracking-widest text-gray-300 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
-                DRAG TO ORBIT &bull; SCROLL TO ZOOM
-            </div>
-
-            <!-- Bottom-Right Viewer Controls (Fades in when hovered) -->
-            <div id="viewer-controls" class="absolute bottom-3 right-3 md:bottom-4 md:right-4 flex items-center gap-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <button id="toggle-rotate-btn" type="button" class="bg-black/75 hover:bg-white hover:text-black border border-white/25 backdrop-blur-sm px-3 py-1.5 rounded text-xs font-bebas tracking-widest text-gray-200 transition-colors cursor-pointer active:scale-95">
-                    PAUSE ROTATE
-                </button>
-                <button id="reset-camera-btn" type="button" class="bg-black/75 hover:bg-white hover:text-black border border-white/25 backdrop-blur-sm px-3 py-1.5 rounded text-xs font-bebas tracking-widest text-gray-200 transition-colors cursor-pointer active:scale-95">
-                    RESET VIEW
-                </button>
+                DRAG TO ORBIT &bull; SCROLL TO ZOOM &bull; SHIFT+DRAG LIGHTING
             </div>
         </div>
 
@@ -122,11 +103,11 @@
             <div class="col-span-1 flex flex-col gap-6 font-light">
                 <div>
                     <h3 class="font-bebas text-2xl tracking-widest text-gray-400 mb-2">ROLE</h3>
-                    <p class="text-sm tracking-wider text-gray-200">Character Modelling, Retopology and Texturing</p>
+                    <p class="text-sm tracking-wider text-gray-200">3D Character & Creature Modeler</p>
                 </div>
                 <div>
                     <h3 class="font-bebas text-2xl tracking-widest text-gray-400 mb-2">TOOLS</h3>
-                    <p class="text-sm tracking-wider text-gray-200">Blender, ZBrush, Substance Painter, Topogun, Marmoset</p>
+                    <p class="text-sm tracking-wider text-gray-200">Blender, ZBrush, Substance Painter, Marmoset Toolbag</p>
                 </div>
                 <div>
                     <h3 class="font-bebas text-2xl tracking-widest text-gray-400 mb-2">TIMELINE</h3>
@@ -138,7 +119,7 @@
             <div class="col-span-1 md:col-span-2">
                 <h3 class="font-bebas text-3xl tracking-widest text-white mb-4">THE CONCEPT</h3>
                 <p class="text-gray-300 font-light tracking-wide leading-relaxed mb-6">
-                    BushGorgon is an original 3D creature modeling project blending various humanoid features with monstrous ones. Taking references from different types of animals and other fictional creatures.
+                    BushGorgon is an original 3D creature modeling study blending organic botanical forms with monstrous anatomy. The focus was on building a strong, unmistakable silhouette while layering intricate surface detail across bark, foliage, and musculature.
                 </p>
                 <p class="text-gray-300 font-light tracking-wide leading-relaxed">
                     From high-poly sculpting and clean retopology to PBR texturing and studio look-dev, the asset was engineered to hold up both in tight close-up renders and real-time engines.
@@ -187,7 +168,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- Clay Sculpt 01: Chest & Scar -->
                 <div class="aspect-[4/3] bg-[#0a0a0a] border border-[#2a2a2a] rounded-sm relative group overflow-hidden flex items-center justify-center">
-                    <img src="./Bushgorgon4.png" alt="BushGorgon Torso Clay Sculpt" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
+                    <img src="./Bushgorgon6.png" alt="BushGorgon Torso Clay Sculpt" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
                     <p class="hidden font-bebas text-2xl text-[#2a2a2a] tracking-widest">TORSO CLAY SCULPT</p>
                     <span class="absolute bottom-3 left-3 bg-black/75 border border-white/15 backdrop-blur-sm px-2.5 py-0.5 rounded text-xs font-bebas tracking-widest text-gray-200 pointer-events-none">
                         TORSO &amp; SCAR DETAIL
@@ -214,16 +195,59 @@
 
     </section>
 
-    <!-- 3D Viewer Controls Script -->
+    <!-- Marmoset Viewer Initialization & Hover/Touch Reveal Script -->
     <script>
+        const MVIEW_FILE = './BushGorgon.mview';
         const viewerContainer = document.getElementById('viewer-container');
+        const marmosetMount = document.getElementById('marmoset-mount');
         const viewerCover = document.getElementById('viewer-cover');
         const viewerHint = document.getElementById('viewer-hint');
-        const viewerControls = document.getElementById('viewer-controls');
-        const viewer = document.getElementById('bushgorgon-viewer');
-        const toggleRotateBtn = document.getElementById('toggle-rotate-btn');
-        const resetCameraBtn = document.getElementById('reset-camera-btn');
         const modelError = document.getElementById('model-error');
+
+        let marmosetViewer = null;
+
+        function initMarmosetViewer() {
+            if (!marmosetMount || typeof marmoset === 'undefined') {
+                if (modelError) modelError.classList.remove('hidden');
+                return;
+            }
+
+            try {
+                const width = Math.max(marmosetMount.clientWidth || 1280, 320);
+                const height = Math.max(marmosetMount.clientHeight || 720, 180);
+
+                // Create responsive Marmoset WebViewer instance
+                marmosetViewer = new marmoset.WebViewer(width, height, MVIEW_FILE);
+                marmosetMount.innerHTML = '';
+                marmosetMount.appendChild(marmosetViewer.domRoot);
+
+                // Pre-load the scene so hovering reveals the live 3D model immediately
+                marmosetViewer.loadScene();
+
+                // Keep WebGL viewport crisp when the browser window resizes
+                const handleResize = () => {
+                    if (!marmosetViewer || !marmosetMount) return;
+                    const w = marmosetMount.clientWidth;
+                    const h = marmosetMount.clientHeight;
+                    if (w > 0 && h > 0) {
+                        marmosetViewer.resize(w, h);
+                    }
+                };
+
+                if (typeof ResizeObserver !== 'undefined') {
+                    const resizeObserver = new ResizeObserver(handleResize);
+                    resizeObserver.observe(marmosetMount);
+                } else {
+                    window.addEventListener('resize', handleResize);
+                }
+            } catch (err) {
+                console.error('Marmoset Viewer failed to initialize:', err);
+                if (modelError) modelError.classList.remove('hidden');
+            }
+        }
+
+        // Initialize once DOM and Marmoset script are ready
+        window.addEventListener('load', initMarmosetViewer);
 
         // Support touch devices: reveal the 3D viewer on first tap inside the container
         if (viewerContainer && viewerCover) {
@@ -231,33 +255,7 @@
                 viewerCover.classList.remove('opacity-100');
                 viewerCover.classList.add('opacity-0');
                 if (viewerHint) viewerHint.classList.add('opacity-100');
-                if (viewerControls) viewerControls.classList.add('opacity-100');
             }, { passive: true });
-        }
-
-        if (viewer) {
-            // Show clean fallback message if the .glb file isn't uploaded yet
-            viewer.addEventListener('error', () => {
-                if (modelError) modelError.classList.remove('hidden');
-            });
-
-            // Toggle turntable auto-rotation
-            toggleRotateBtn.addEventListener('click', () => {
-                const isRotating = viewer.hasAttribute('auto-rotate');
-                if (isRotating) {
-                    viewer.removeAttribute('auto-rotate');
-                    toggleRotateBtn.textContent = 'AUTO ROTATE';
-                } else {
-                    viewer.setAttribute('auto-rotate', '');
-                    toggleRotateBtn.textContent = 'PAUSE ROTATE';
-                }
-            });
-
-            // Reset camera back to default framing
-            resetCameraBtn.addEventListener('click', () => {
-                viewer.cameraOrbit = 'auto auto auto';
-                viewer.fieldOfView = 'auto';
-            });
         }
     </script>
 
